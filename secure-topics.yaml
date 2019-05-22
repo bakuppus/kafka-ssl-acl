@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-topic-jobs
+spec:
+  template:
+    metadata:
+      name: topic-jobs
+    spec:
+      containers:
+      - name: create-topic
+        image: confluentinc/cp-kafka
+        command: ["kafka-topics", "--zookeeper", "funny-porcupine-  cp-zookeeper:2181", "--create", "--topic" ,"secured-topic", "--partitions", "1", "--replication-factor", "1", "--if-not-exists"]
+      restartPolicy: OnFailure
+
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: kafka-acl-jobs
+spec:
+  template:
+    metadata:
+      name: acl-jobs
+    spec:
+      containers:
+      - name: create-acl
+        image: confluentinc/cp-kafka
+        command: ["kafka-acls","--topic","secured-topic","--producer","--authorizer-properties","zookeeper.connect=funny-porcupine-cp-zookeeper:2181", "--add","--allow-principal","User:CN=baladigitalcloud,OU=IT,O=baladigitalcloud,L=Bangalore,ST=Karnataka,C=IN"]
+      restartPolicy: OnFailure

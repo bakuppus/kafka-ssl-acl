@@ -1,0 +1,24 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: centos
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: centos
+    spec:
+      containers:
+      - name: centos
+        image: centos/httpd:latest
+        ports:
+        - name: http-port
+          containerPort: 80
+        volumeMounts:
+        - name: apachelog
+          mountPath: /log
+      volumes:
+        - name: apachelog
+          secret:
+            secretName: ssl-config
